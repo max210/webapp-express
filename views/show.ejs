@@ -1,0 +1,15 @@
+<div class="btn-group pull-right">
+  <button type="button" class="btn btn-default">操作</button>
+  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+    <span class="sr-only">Toggle Dropdown</span>
+  </button>
+  <li><a href="/posts">回到列表</a></li>
+
+  <ul class="dropdown-menu">
+    <li><a href="/posts/edit?id=<%= post._id %>">编辑</a></li>
+  </ul>
+</div>
+
+<h1><%= post.title %></h1>
+<div><%- post.content %></div>

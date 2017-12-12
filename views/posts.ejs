@@ -1,0 +1,44 @@
+<h1><%= title %></h1>
+<div class="btn-group pull-right">
+  <button type="button" class="btn btn-default">操作</button>
+  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+    <span class="sr-only">Toggle Dropdown</span>
+  </button>
+  <ul class="dropdown-menu">
+    <li><a href="/posts/create">新建</a></li>
+  </ul>
+</div>
+<div v-for="item in postsList">
+  <a v-bind:href="item.url">{{ item.title }}</a>
+</div>
+
+<script>
+  let vm = new Vue({
+    el: '#app',
+    data: {
+      postsList: []
+    },
+    methods: {
+      fetchData () {
+        axios.get('/api/v1/posts')
+          .then((res) => {
+            if (res.status !== 200) {
+              throw new Error('error!')
+            }
+
+            return res.data;
+          })
+          .then((data) => {
+            vm.postsList = data.postsList;
+            vm.postsList.forEach((element) => element.url = '/posts/show?id=' + element._id)
+          })
+          .catch((err) =>{
+            alert(err)
+          })
+      }
+    }
+  })
+
+  vm.fetchData()
+</script>
