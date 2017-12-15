@@ -2,21 +2,50 @@ let userModel = require('../models/user')
 let config = require('../config')
 
 function authUser(req, res, next) {
-  const authToken = req.signedCookies[config.cookieName] || ''
   res.locals.currentUser = null
 
-  if (authToken) {
-    userModel.findOne({_id: authToken}, (err, user) => {
-      if (err) {
-        next()
-      } else {
-        res.locals.currentUser = user
-        next()
-      }
-    })
-  } else {
+  if (req.session && req.session.user) {
+    const user = req.session.user
+    res.locals.currentUser = user
     next()
+  } else {
+    const authToken = req.signedCookies[config.cookieName] || ''
+    if (authToken) {
+      userModel.findOne({_id: authToken}, (err, user) => {
+        if (err) {
+          next()
+        } else {
+          if (user.loginname === config.admin) {
+            user.isAdmin = true;
+          }
+
+          req.session.user = user
+          res.locals.currentUser = user
+          next()
+        }
+      })
+    } else {
+      next()
+    }
   }
 }
 
-module.exports = {authUser}
+function adminRequired(req, res, next) {
+  if (!req.session || !req.session.user) {
+    let err = new Error('需要登录');
+    err.status = 403;
+    next(err);
+    return;
+  }
+
+  if (!req.session.user.isAdmin) {
+    let err = new Error('需要管理员权限');
+    err.status = 403;
+    next(err);
+    return;
+  }
+
+  next();
+}
+
+module.exports = {authUser, adminRequired}

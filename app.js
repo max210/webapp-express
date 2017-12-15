@@ -1,5 +1,6 @@
 require('./models/init')
 let express = require('express')
+let config = require('./config')
 let path = require('path')
 let favicon = require('serve-favicon')
 let logger = require('morgan')
@@ -7,9 +8,12 @@ let cookieParser = require('cookie-parser')
 let bodyParser = require('body-parser')
 let expressLayouts = require('express-ejs-layouts')
 let auth = require('./middlewares/auth')
+let connectMongodb = require('connect-mongo')
+let session = require('express-session')
 
 let api = require('./routes/router.api')
 let page = require('./routes/router.page')
+let MongoStore = new connectMongodb(session);
 
 let app = express()
 
@@ -26,6 +30,16 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser('+crypto.randomBytes(64)+'))
 app.use(express.static(path.join(__dirname, 'public')))
 
+app.use(
+  session({
+    secret: config.sessionSecret,
+    store: new MongoStore({
+      url: 'mongodb://192.168.99.100:32788/webapp-expressss'
+    }),
+    resave: true,
+    saveUninitialized: true
+  })
+)
 app.use(auth.authUser)
 app.use('/', page)
 app.use('/api/v1', api)

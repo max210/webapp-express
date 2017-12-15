@@ -1,6 +1,7 @@
 let express = require('express')
 let postModel = require('../models/post')
 let marked = require('marked')
+let auth = require('../middlewares/auth')
 
 let router = express.Router()
 
@@ -12,7 +13,7 @@ router.get('/posts', (req, res, next) => {
   res.render('posts', {title: 'posts'})
 })
 
-router.get('/posts/create', (req, res, next) => {
+router.get('/posts/create', auth.adminRequired, (req, res, next) => {
   res.render('create')
 })
 
