@@ -34,7 +34,7 @@ app.use(
   session({
     secret: config.sessionSecret,
     store: new MongoStore({
-      url: 'mongodb://192.168.99.100:32788/webapp-expressss'
+      url: config.mongodbUrl
     }),
     resave: true,
     saveUninitialized: true
