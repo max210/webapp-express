@@ -1,5 +1,5 @@
 let mongoose = require('mongoose')
-let config = require('./config')
+let config = require('../config')
 
 mongoose.connect(config.mongodbUrl, {
   useMongoClient: true
