@@ -15,7 +15,8 @@ function authUser(req, res, next) {
         if (err) {
           next()
         } else {
-          if (user.loginname === config.admin) {
+          user = user.toObject()
+          if (user.name === config.admin) {
             user.isAdmin = true;
           }
 
@@ -37,7 +38,6 @@ function adminRequired(req, res, next) {
     next(err);
     return;
   }
-
   if (!req.session.user.isAdmin) {
     let err = new Error('需要管理员权限');
     err.status = 403;
