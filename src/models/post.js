@@ -1,4 +1,4 @@
-let mongoose = require('mongoose')
+import mongoose from 'mongoose'
 
 let PostSchema = new mongoose.Schema({
   title: String,
@@ -7,4 +7,4 @@ let PostSchema = new mongoose.Schema({
 
 let PostModel = mongoose.model('post', PostSchema)
 
-module.exports = PostModel
+export default PostModel

@@ -1,5 +1,5 @@
-let userModel = require('../models/user')
-let config = require('../config')
+import userModel from '../models/user'
+import config from '../config'
 
 function authUser(req, res, next) {
   res.locals.currentUser = null
@@ -48,4 +48,5 @@ function adminRequired(req, res, next) {
   next();
 }
 
-module.exports = {authUser, adminRequired}
+export default {authUser, adminRequired}
+// module.exports = {authUser, adminRequired}

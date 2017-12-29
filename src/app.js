@@ -1,18 +1,18 @@
-require('./models/init')
-let express = require('express')
-let config = require('./config')
-let path = require('path')
-let favicon = require('serve-favicon')
-let logger = require('morgan')
-let cookieParser = require('cookie-parser')
-let bodyParser = require('body-parser')
-let expressLayouts = require('express-ejs-layouts')
-let auth = require('./middlewares/auth')
-let connectMongodb = require('connect-mongo')
-let session = require('express-session')
+import './models/init'
+import express from 'express'
+import config from './config'
+import path from 'path'
+import favicon from 'serve-favicon'
+import logger from 'morgan'
+import cookieParser from 'cookie-parser'
+import bodyParser from 'body-parser'
+import expressLayouts from 'express-ejs-layouts'
+import auth from './middlewares/auth'
+import connectMongodb from 'connect-mongo'
+import session from 'express-session'
 
-let api = require('./routes/router.api')
-let page = require('./routes/router.page')
+import api from './routes/router.api'
+import page from './routes/router.page'
 let MongoStore = new connectMongodb(session);
 
 let app = express()
@@ -62,4 +62,4 @@ app.use((err, req, res, next) => {
   res.render('error')
 })
 
-module.exports = app
+export default app

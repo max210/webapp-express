@@ -1,9 +1,9 @@
-let express = require('express')
-let postModel = require('../models/post')
-let errHandle = require('../common/errHandle')
-let bcrypt = require('bcrypt')
-let userModel = require('../models/user')
-let config = require('../config')
+import express from 'express'
+import postModel from '../models/post'
+import errHandle from '../common/errHandle'
+import bcrypt from 'bcrypt'
+import userModel from '../models/user'
+import config from '../config'
 
 let router = express.Router()
 
@@ -115,4 +115,4 @@ router.post('/signin', (req, res, next) => {
   })
 })
 
-module.exports = router
+export default router

@@ -1,5 +1,5 @@
-let mongoose = require('mongoose')
-let config = require('../config')
+import mongoose from 'mongoose'
+import config from '../config'
 
 mongoose.connect(config.mongodbUrl, {
   useMongoClient: true

@@ -1,7 +1,7 @@
-let express = require('express')
-let postModel = require('../models/post')
-let marked = require('marked')
-let auth = require('../middlewares/auth')
+import express from 'express'
+import postModel from '../models/post'
+import marked from 'marked'
+import auth from '../middlewares/auth'
 
 let router = express.Router()
 
@@ -40,4 +40,4 @@ router.get('/signin', (req, res, next) => {
   res.render('signin');
 });
 
-module.exports = router
+export default router
