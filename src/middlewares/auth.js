@@ -1,52 +1,58 @@
 import userModel from '../models/user'
 import config from '../config'
+import jwt from 'jwt-simple'
+import moment from 'moment'
 
 function authUser(req, res, next) {
   res.locals.currentUser = null
 
-  if (req.session && req.session.user) {
-    const user = req.session.user
-    res.locals.currentUser = user
-    next()
-  } else {
-    const authToken = req.signedCookies[config.cookieName] || ''
-    if (authToken) {
-      userModel.findOne({_id: authToken}, (err, user) => {
-        if (err) {
-          next()
-        } else {
-          user = user.toObject()
-          if (user.name === config.admin) {
-            user.isAdmin = true;
-          }
+  const token =
+      req.headers['x-access-token'] || req.signedCookies[config.cookieName] || ''
 
-          req.session.user = user
-          res.locals.currentUser = user
-          next()
+    if (token) {
+      try {
+        const decoded = jwt.decode(token, config.jwtSecret)
+        if (decoded.exp <= Date.now()) {
+          res.end('Access token has expired', 400)
+          return
         }
-      })
+
+        req.user = res.locals.currentUser = decoded
+        return next()
+      } catch (err) {
+        return next()
+      }
     } else {
       next()
     }
+}
+
+function userRequired(req, res, next) {
+  if (!req.user) {
+    let err = new Error('需要登录')
+    err.status = 403
+    next(err)
+    return
   }
+
+  next()
 }
 
 function adminRequired(req, res, next) {
-  if (!req.session || !req.session.user) {
-    let err = new Error('需要登录');
-    err.status = 403;
-    next(err);
-    return;
-  }
-  if (!req.session.user.isAdmin) {
-    let err = new Error('需要管理员权限');
-    err.status = 403;
-    next(err);
-    return;
+  if (!req.user) {
+    let err = new Error('需要登录')
+    err.status = 403
+    next(err)
+    return
   }
 
-  next();
+  if (!req.user.isAdmin) {
+    let err = new Error('需要管理员权限')
+    err.status = 403
+    next(err)
+    return
+  }
+
+  next()
 }
-
 export default {authUser, adminRequired}
-// module.exports = {authUser, adminRequired}

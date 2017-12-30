@@ -4,6 +4,8 @@ import errHandle from '../common/errHandle'
 import bcrypt from 'bcrypt'
 import userModel from '../models/user'
 import config from '../config'
+import jwt from 'jwt-simple'
+import moment from 'moment'
 
 let router = express.Router()
 
@@ -102,15 +104,27 @@ router.post('/signin', (req, res, next) => {
         return errHandle(new Error('密码不正确'), next)
       }
 
+      // 生产 token
+      const token = jwt.encode(
+        {
+          _id: user._id,
+          name: user.name,
+          isAdmin: user.name === config.admin ? true : false,
+          exp: moment().add('days', 30).valueOf(),
+        },
+        config.jwtSecret
+      )
+
       let authToken = user._id
       let opts = {
         path: '/',
-        maxAge: 1000 * 60 * 60 * 24 * 30,
+        maxAge: moment().add('days', 30).valueOf(),
         signed: true,
         httpOnly: true
       }
-      res.cookie(config.cookieName, authToken, opts)
-      res.end()
+      // 将 token 保存在 cookie 里。
+      res.cookie(config.cookieName, token, opts)
+      res.json({ token })
     }
   })
 })

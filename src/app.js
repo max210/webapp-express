@@ -30,16 +30,6 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser('+crypto.randomBytes(64)+'))
 app.use(express.static(path.join(__dirname, 'public')))
 
-app.use(
-  session({
-    secret: config.sessionSecret,
-    store: new MongoStore({
-      url: config.mongodbUrl
-    }),
-    resave: true,
-    saveUninitialized: true
-  })
-)
 app.use(auth.authUser)
 app.use('/', page)
 app.use('/api/v1', api)
