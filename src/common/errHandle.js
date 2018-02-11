@@ -3,4 +3,4 @@ let errHandle = function (err, next) {
   next(err)
 }
 
-module.exports = errHandle
+export default errHandle
